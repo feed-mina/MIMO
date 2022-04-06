@@ -22,16 +22,16 @@
 
 
 # 프론트앤드 : React V9
+ ![image](https://user-images.githubusercontent.com/97416996/161910104-1ffa2ac9-3e5d-44e3-b96c-a47bc7c4a3f8.png)
+![image](https://user-images.githubusercontent.com/97416996/161910217-3fb36e99-22ba-4512-97b8-22947fa704bf.png)
+![image](https://user-images.githubusercontent.com/97416996/161910276-f14766a8-af2b-4dc2-bb0f-11024596a781.png)
+![image](https://user-images.githubusercontent.com/97416996/161910322-0057cdb9-e98b-4261-97ff-c030e27173cd.png)
+![image](https://user-images.githubusercontent.com/97416996/161910373-8473d882-a442-4cca-aea9-835c781fe127.png)
+![image](https://user-images.githubusercontent.com/97416996/161910458-13486573-dad4-49a4-9a40-3f8a4a8bfd53.png)
 
-![image](https://user-images.githubusercontent.com/97416996/161698534-681484a6-ccbf-44f2-9d12-96481eb81b57.png)
-![image](https://user-images.githubusercontent.com/97416996/161698270-5f19cde4-02c7-4a69-9016-3cbf0ca2e0a3.png)
-![image](https://user-images.githubusercontent.com/97416996/161698337-076555e2-a7b2-4d5e-afc7-ca45d27f9125.png)
-![image](https://user-images.githubusercontent.com/97416996/161698404-d3b714ba-9a55-4d10-aa21-4e79eecd8a83.png)
-![image](https://user-images.githubusercontent.com/97416996/161698483-8079131a-7b71-4222-bcbf-a04a8c3368ae.png)
-![image](https://user-images.githubusercontent.com/97416996/161698294-a5fe875f-9a9d-4af6-bd6c-f606142fc40f.png)
 
-# 백앤드 : Firebase
-# 모델링 : node.js
+# DB : Firebase Cloud Data 사용
+# 모델링(Face Segmentation) : node.js
 
 # 프로젝트 수행결과 - 모델
 ## Dataset, 전처리
