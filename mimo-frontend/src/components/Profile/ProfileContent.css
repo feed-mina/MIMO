@@ -1,0 +1,38 @@
+.profilecontent {
+    display: flex;
+    flex-direction: column;
+}
+
+.cart {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    padding-left: 10px;
+    align-content: space-between;
+}
+
+.cartimg {
+    padding-right: 20px;
+}
+
+.carttext {
+    font-weight: 1000;
+    font-size: larger;
+}
+
+.review {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    padding-left: 10px;
+    align-content: space-between;
+}
+
+.reviewimg {
+    padding-right: 20px;
+}
+
+.reviewtext {
+    font-weight: 1000;
+    font-size: larger;
+}

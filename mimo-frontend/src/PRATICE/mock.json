@@ -1,0 +1,54 @@
+[{
+        "imgUrl": "https://i.ibb.co/9pGHgRj/bestitem1.png",
+        "price": "181.00",
+        "title": "제로 벨벳 틴트",
+        "Url": "https://delia.com",
+        "content": "#오리지널시리즈",
+        "id": "1"
+    },
+    {
+        "imgUrl": "https://i.ibb.co/zmJY5Lh/bestitem2.png",
+        "price": "848.00",
+        "title": "밀크티 벨벳 틴트",
+        "Url": "https://bria.name",
+        "content": "#홍차컬러 #밀크",
+        "id": "2"
+    },
+    {
+        "imgUrl": "https://i.ibb.co/Kxdt819/bestitem3.png",
+        "price": "457.0",
+        "title": "블러 퍼지 틴트",
+        "Url": "https://linnea.name",
+        "content": "#무광 그라데이션",
+        "id": "3"
+    },
+    {
+        "imgUrl": "https://i.ibb.co/JxR8tjC/bestitem4.png",
+        "price": "457.00",
+        "title": "쥬시 래스팅 여라",
+        "Url": "http://norene.com",
+        "content": "#여라 시리즈",
+        "id": "4"
+    }, {
+        "imgUrl": "https://i.ibb.co/qk9Mw2j/camera-prod3.png",
+        "price": "786.00",
+        "title": "제로 벨벳 틴트",
+        "Url": "http://randi.net",
+        "content": "#빈티지 필터",
+        "id": "5"
+    }, {
+        "imgUrl": "https://i.ibb.co/bF0FG72/camera-prod1.png",
+        "price": "865.00",
+        "title": "듀이풀 워터 틴트",
+        "Url": "http://stan.info",
+        "content": "#입술에 내린 단비",
+        "id": "6"
+    }, {
+        "imgUrl": "https://i.ibb.co/rHfSGcS/camera-prod2.png",
+        "price": "635.00",
+        "title": "쥬시 래스팅 베어",
+        "Url": "https://aileen.org",
+        "content": "#베어쥬시",
+        "id": "7"
+    }
+]

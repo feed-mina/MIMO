@@ -1,0 +1,56 @@
+.profileimg-container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    height: 150px;
+    position: relative;
+}
+
+.profile-avatar {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    text-align: center;
+}
+
+.profileimg {
+    margin-top: 50px;
+}
+
+.profilebody-container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+}
+
+.name {
+    font-size: medium;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.password {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    padding-left: 10px;
+    align-content: space-between;
+}
+
+.passwordimg {
+    padding-right: 20px;
+    align-content: space-between;
+}
+
+.passwordtext {
+    font-weight: 1000;
+    font-size: larger;
+}
+
+
+/* .profile {
+    width: 500px;
+    height: 500px;
+} */

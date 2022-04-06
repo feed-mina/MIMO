@@ -1,0 +1,148 @@
+.detailinfo{
+    text-align: center;
+    font-size: 20px;
+}
+.logininfotxt{
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
+    margin-top: 30px;
+    font-weight: bolder;
+    font-size: 30px;
+}
+
+.logininfosubtxt{
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
+    font-weight: bolder;
+    font-size: 25px;
+}
+
+.skintypesection1{
+    font-weight: bolder;
+    font-size: 25px;
+  
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
+    margin-top: 30px;
+}
+
+
+.skintyperow1{
+ 
+    position: relative;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-evenly;
+  
+    align-content:center;
+    flex-wrap: nowrap;
+    padding: 20px;
+    
+}
+
+.skintyperow2{
+    position: relative;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-evenly;
+  
+    align-content:center;
+    flex-wrap: nowrap;
+    padding: 20px;
+    
+}
+
+.skintypesection2{
+    font-weight: bolder;
+    font-size: 25px;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    text-align: center;
+    margin-top: 30px;
+    border-color: #E5E5E5;
+ 
+}
+.skintyperow3{
+    position: relative;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-evenly;
+  
+    align-content:center;
+    flex-wrap: nowrap;
+    padding: 20px;
+ 
+}
+
+.skintyperow4{
+    position: relative;
+    display:flex;
+    flex-direction:row;
+    justify-content:space-evenly;
+  
+    align-content:center;
+    flex-wrap: nowrap;
+    padding: 20px;
+ 
+}
+
+
+.submitButton1{
+    font-size: 20px;
+    font-weight: bolder;
+    background-color: #ffffff;
+    color: #000000;
+    height:120px;
+    width: 120px;
+    cursor: pointer;
+    border-radius: 12px;
+    border-color: #E5E5E5;
+}
+
+.submitButton1.checked{
+    background-color: #C13E3E;
+    color:#ffffff;
+}
+
+
+.submitButton2.checked{
+    background-color: #C13E3E;
+    color:#ffffff;
+}
+.submitButton2{
+    font-weight: bolder;
+    font-size: 20px;
+    background-color:   #ffffff;   
+    color:#000000;
+    height:120px;
+    width: 120px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    border-radius: 12px;
+    border-color: #E5E5E5;
+
+}
+
+.submitButton1:hover{
+    background-color: #C13E3E;
+    color:#ffffff;
+}
+.submitButton2:hover{
+    background-color:#C13E3E;
+    color:#ffffff;
+}

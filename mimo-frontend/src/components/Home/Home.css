@@ -1,0 +1,37 @@
+@keyframes event {
+    from {
+        background-image: url(https://romand.co.kr/web/product/big/202202/fe15a54b9442941c0bf70813055aad4f.jpg);
+    }
+    to {
+        background-image: url(https://romand.co.kr/web/upload/category/shop1_74_title_932352.jpg);
+    }
+}
+
+.home-container {
+    width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.intro {
+    width: 100%;
+    margin-top: 50px;
+}
+
+.home_logo {
+    width: 100%;
+    height: 112px;
+    position: relative;
+    top: 150px;
+}
+
+.home_text {
+    position: relative;
+    top: 400px;
+    word-break: keep-all;
+    width: 400px;
+    text-align: center;
+}

@@ -1,0 +1,73 @@
+.header_before {
+    width: 28px;
+    height: 28px;
+    margin: 44px 331px 10px 16px;
+    padding: 5px 3.5px 5px 3px;
+}
+.camera_image{
+    position: relative;
+    top: 35px;
+    left: 0px;
+    display: block;
+    text-align: center;
+}
+.camera_picture {
+    position: relative;
+    top: 68px;
+    left: 34px;
+    display: block;
+    text-align: center;
+}
+.camera_shot {
+    position: relative;
+    top: 0px;
+    left: 132px;
+    display: block;
+    text-align: center;
+}
+.camera_prods {
+    position: relative;
+    top: -72px;
+    left: 267px;
+    display: block;
+    text-align: center;
+}
+.camera_prod1 {
+    position: relative;
+    top: 50px;
+    left: 6px;
+    display: block;
+    text-align: center;
+}
+.camera_prod2 {
+    position: relative;
+    top: -70px;
+    left: 134px;
+    display: block;
+    text-align: center;
+}
+.camera_prod3 {
+    position: relative;
+    top: -190px;
+    left: 260px;
+    display: block;
+    text-align: center;
+}
+.camera_prod1_text {
+    position: relative;
+    top: -184px;
+    left: 20px;
+    display: block;
+}
+.camera_prod2_text {
+    position: relative;
+    top: -202px;
+    left: 142px;
+    display: block;
+}
+.camera_prod3_text {
+    position: relative;
+    top: -222px;
+    left: 262px;
+    display: block;
+}

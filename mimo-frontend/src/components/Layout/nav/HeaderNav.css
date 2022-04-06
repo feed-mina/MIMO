@@ -1,0 +1,5 @@
+.first-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}

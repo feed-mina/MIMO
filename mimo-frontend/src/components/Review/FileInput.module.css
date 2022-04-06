@@ -1,0 +1,29 @@
+.previewimg {
+    display: flex;
+    flex-direction: row;
+}
+
+.filebutton {
+    color: aqua;
+}
+
+.actions input {
+    cursor: pointer;
+    font-weight: 1000;
+    color: black;
+    background-color: whitesmoke;
+    border: 3px solid #ff6c94;
+    border-radius: 4px;
+}
+
+.actions input:hover {
+    background-color: #e1c0b6;
+    border-color: whitesmoke;
+}
+
+.filebutton {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: auto;
+}

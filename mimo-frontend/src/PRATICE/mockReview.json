@@ -1,0 +1,17 @@
+[{
+        "createdAt": "2022-03-21T06:06:44.121Z",
+        "nickname": "아이린",
+        "rating": "5",
+        "content": "어플리케이션 정말 신기해요 ! 저에게 딱맞는 색깔을 찾았어요.",
+        "avatar": "https://i.ibb.co/q5zk2X3/3586ef9e95cc88e6a4e36d68094ca76a-1.png",
+        "id": "1"
+    },
+    {
+        "createdAt": "2022-03-21T16:40:08.652Z",
+        "nickname": "아이유",
+        "content": "인생아이탬 발견 , MIMO 다른사람들에게도 소문낼꼐요 ~~!",
+        "rating": "5",
+        "avatar": "https://i.ibb.co/J3DQNyL/be86113361437c786ea6223586ba7cd1.jpg",
+        "id": "2"
+    }
+]

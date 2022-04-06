@@ -1,0 +1,15 @@
+.ReviewForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.ReviewForm> :not(:last-child) {
+    margin-bottom: 20px;
+}
+
+.fileinput {
+    width: 50%;
+    padding: 0;
+    margin: auto;
+    text-align: center;
+}
