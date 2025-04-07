@@ -4,6 +4,11 @@
 > 코로나 이후 급성장한 색조 화장품 시장,  
 > AI를 활용한 실시간 시뮬레이션으로 온라인 메이크업 체험을 가능하게 한 프로젝트입니다.
 
+> 국비 교육 과정 중 진행한 첫 번째 팀 프로젝트로, React와 CSS를 활용해 가상 메이크업 시뮬레이션 웹 애플리케이션을 개발했습니다.
+> 처음 도전한 개발 작업에 막막함을 느꼈지만, 디자이너와의 협업을 통해 UI/UX 디자인을 구체화했습니다.
+> HTML과 CSS로 초기 레이아웃을 구성한 후 React로 컴포넌트화하며 점차 자신감을 얻었습니다.
+> 이 과정에서 Ajax로 API를 호출하고 OAuth2를 활용해 구글 로그인 기능을 구현하며 백엔드와의 통신 흐름도 익힐 수 있었습니다.
+> 팀원들과 함께 기능 구현부터 문제 해결에 이르기까지 다양한 경험을 통해 프론트엔드와 백엔드 간의 협업과 기술 스택 활용법을 배울 수 있었습니다.
 ---
 
 ## 🧠 프로젝트 개요
@@ -30,15 +35,18 @@
 
 ## 🖼️ UI 미리보기
 
+## 🖼️ UI 미리보기
+
 <p align="center">
-  <img src="assets/mimo-ui-main.png" width="700" />
-  <img src="assets/mimo-ui-shot.png" width="700" />
-  <img src="assets/mimo-ui-cart.png" width="700" />
-  <img src="assets/mimo-ui-login.png" width="700" />
-  <img src="assets/mimo-ui-password.png" width="700" />
-  <img src="assets/mimo-ui-profile.png" width="700" />
-  <img src="assets/mimo-ui-review.png" width="700" />
+  <img src="assets/mimo-ui-main.png" width="340" />
+  <img src="assets/mimo-ui-shot.png" width="340" /><br/>
+  <img src="assets/mimo-ui-cart.png" width="340" />
+  <img src="assets/mimo-ui-login.png" width="340" /><br/>
+  <img src="assets/mimo-ui-password.png" width="340" />
+  <img src="assets/mimo-ui-profile.png" width="340" /><br/>
+  <img src="assets/mimo-ui-review.png" width="340" />
 </p>
+
 
 ---
 
