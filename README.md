@@ -1,69 +1,101 @@
-# MIMO 
-# 미인의 모든것 : 가상 메이크업 시뮬레이션 서비스
+# 💄 MIMO: 가상 메이크업 시뮬레이션 웹 서비스
 
-## 프로젝트 주제 및 선정 배경
-"앱에서도 실제 립스틱 제품을 발라볼 순 없을까?"
+> “앱에서도 립스틱 제품을 실제처럼 발라볼 수 없을까?”  
+> 코로나 이후 급성장한 색조 화장품 시장,  
+> AI를 활용한 실시간 시뮬레이션으로 온라인 메이크업 체험을 가능하게 한 프로젝트입니다.
 
-“하늘 아래 같은 색은 없다” 온라인으로 화장품 구매를 하면서 다양한 색조 화장품을 테스트하고 싶은 20~30대 여성 고객의 니즈를 만족 시키고,  코로나 상황에서 오프라인 매장 제품 테스트에 대한 소비자의 부담을 덜어내기 위해 가상 메이크업 시뮬레이션 서비스를 개발 하게 되었습니다.
+---
 
-웹캠으로 얼굴 사진을 찍은 후, 마음에 드는 립스틱 색상을 선택 하면 가상으로 립스틱을 바른 것처럼 시뮬레이션 해 주는 서비스를 구현 하였습니다. K-POP 및 한류 열풍이 강하게 부는 동남 아시아, 중남미 등 해외의 20-30대 여성까지 소비층을 크게 확장 할 수 있는 매우 높은 시장 가치를 가지고 있는 서비스 입니다.
+## 🧠 프로젝트 개요
 
-## 프로젝트 목적
-다양한 화장품 브랜드 제품을 테스트하고 싶은 고객의 니즈를 만족 시키고,  코로나 상황에서 오프라인 매장 제품 테스트에 대한 소비자의 부담을 덜어내기 위해 가상 메이크업 시뮬레이션 서비스를 개발 한다. 수업에서 배운 Frontend / Backend / 인공지능 지식을 활용하여 어플리케이션을 구축한다.  
+- **진행 기간**: 2022.01 ~ 2022.03 (2개월)
+- **기여도**: UX/UI 설계 및 프론트엔드 개발 100%  
+- **기획 목적**:  
+  코로나로 오프라인 테스트가 어려워진 상황에서  
+  **사용자가 직접 얼굴에 색조를 적용해보며** 화장품을 선택할 수 있는 웹 시뮬레이션 서비스 개발
 
+---
 
-## 프로젝트 목표
-1.  웹캠으로 얼굴 사진을 찍은 후, 마음에 드는 립스틱 색상을 선택 하면 가상으로 립스틱을 바른 것처럼 시뮬레이션이 가능하게 한다
+## 🎯 주요 기능
 
-2.  기존 시장에 있는 화장품 어플리케이션과 같이 깔끔한 디자인으로 화면을 구성하여 고객의 이목을 끌고 로그인, 장바구니 등의 기능을 구현시킨다. 
+| 기능 | 설명 |
+|------|------|
+| 🎥 웹캠 기반 얼굴 촬영 | 사진 촬영 후 립스틱 색상 적용 |
+| 🖼 AI 시뮬레이션 | 얼굴 영역 분리 후 립 컬러 매핑 |
+| 🛒 장바구니 & 상품 정보 | 좋아요, 상세보기, 구매 버튼 |
+| ✍️ 리뷰 작성 | 텍스트 및 이미지 리뷰 |
+| 🔐 소셜 로그인 | OAuth 기반 로그인 |
 
-3. 제품에 대한 리뷰나 시뮬레이션 결과 사진을 공유함으로써  뷰티 플랫폼으로 확장이 가능한 서비스를 만든다.
-![image](https://user-images.githubusercontent.com/97416996/161694455-6ef6535b-04b8-4d4e-bd21-cc993d1cb000.png)
+---
 
+## 🖼️ UI 미리보기
 
-# 프론트앤드 : React V9
+<p align="center">
+  <img src="assets/mimo-ui-main.png" width="700" />
+  <img src="assets/mimo-ui-shot.png" width="700" />
+  <img src="assets/mimo-ui-cart.png" width="700" />
+  <img src="assets/mimo-ui-login.png" width="700" />
+  <img src="assets/mimo-ui-password.png" width="700" />
+  <img src="assets/mimo-ui-profile.png" width="700" />
+  <img src="assets/mimo-ui-review.png" width="700" />
+</p>
 
-![image](https://user-images.githubusercontent.com/97416996/161910104-1ffa2ac9-3e5d-44e3-b96c-a47bc7c4a3f8.png)
+---
 
-![image](https://user-images.githubusercontent.com/97416996/161910217-3fb36e99-22ba-4512-97b8-22947fa704bf.png)
-![image](https://user-images.githubusercontent.com/97416996/161910276-f14766a8-af2b-4dc2-bb0f-11024596a781.png)
-![image](https://user-images.githubusercontent.com/97416996/161910458-13486573-dad4-49a4-9a40-3f8a4a8bfd53.png)
+##  🖼️ 미모 프로젝트 profile
 
-![image](https://user-images.githubusercontent.com/97416996/161910322-0057cdb9-e98b-4261-97ff-c030e27173cd.png)
-![image](https://user-images.githubusercontent.com/97416996/161910373-8473d882-a442-4cca-aea9-835c781fe127.png)
+<p align="center">
+  <img src="assets/mimo-profile1.png" width="700" />
+  <img src="assets/mimo-profile2.png" width="700" />
+</p>
 
+--
+## 🧪 기술 스택
 
-# DB : Firebase Cloud Data 사용
-# 모델링(Face Segmentation) : node.js
+| 파트 | 사용 기술 |
+|------|-----------|
+| **Frontend** | React, JavaScript, HTML/CSS |
+| **Backend** | Spring Boot, Java, MySQL |
+| **AI** | Node.js, TensorFlow, OpenCV, scikit-learn |
+| **UI/UX** | Figma, Proto.io |
+| **Infra** | Google Cloud, Firebase |
+| **협업 툴** | Notion, Zeplin |
 
-# 프로젝트 수행결과 - 모델
-## Dataset, 전처리
+---
 
-◾ CelebAMask-HQ 30,000장 얼굴 데이터를 수집 하여 training, test 수행
-Input image(사람 얼굴 사진) 별 입술, 머리, 눈썹(왼쪽, 오른쪽), 눈(왼쪽, 오른쪽), 코, 등을 segmentation 한 ground truth 이미지를 함께 수집 함
-train, validation , test set 은 7:2:1 비율/원본 이미지와 ground truth 이미지는 U-net으로 train 시킴
-![image](https://user-images.githubusercontent.com/97416996/161695063-d12694f0-863b-48a5-9fdb-6cccabf81656.png)
+## 🔍 AI 모델 구성
 
+- **모델 타입**: U-Net 기반 Face Segmentation
+- **Dataset**: CelebA
+- **정확도**:
+  | 모델 | Accuracy (%) | mIoU (%) |
+  |------|---------------|----------|
+  | U-Net | 91.15% | 88.00% |
 
-## U-Net
-Semantic segmentation은 이미지의 각 픽셀에 해당 클래스에 레이블을 지정하는 분류 작업으로 이를 위해 U-Net을 사용 하였다. U-Net은 Biomedical 분야에서 이미지 분할(Image Segmentation)을 목적으로 제안된 End-to-End 방식의 Fully-Convolutional Network 기반 모델로 자율주행 과 의료 영상 진단 등에 많이 쓰이며 대중적으로 성장했고 다양한 분할 문제에 맞게 조정되고 있다
+- **적용 흐름**: 얼굴 촬영 → 이미지 전처리(OpenCV) → 얼굴 파츠 마스킹 → 색상 덧입히기
 
-### U-Net의 장점
-* 적은 양의 학습 데이터로도 Data Augmentation을 활용해 여러 Biomedical Image Segmentation 문제에서 우수한 성능을 보임
-* 컨텍스트 정보를 잘 사용하면서도 정확히 지역화함
-* ![image](https://user-images.githubusercontent.com/97416996/161695249-947c5629-8819-48f8-8bbc-c864ad85bd4e.png)
+<p align="center">
+  <img src="assets/mimo-ai-unet3.png" width="700" />
+  <img src="assets/mimo-ai-unet1.png" width="700" />
+  <img src="assets/mimo-ai-unet2.png" width="700" />
+</p>
 
-## 모델 성능 및 개선
-### 결과
-![image](https://user-images.githubusercontent.com/97416996/161695433-57a140f5-86c6-4437-8122-fcb15e943cbd.png)
+---
 
-### 개선 방안
-1. SparseCategoricalCrossentropy→ Dice-Loss 적용
-* Dice-Loss 장점: 
-임계값을 지정하고, 이진 마스크로 변환 하는 대신 예측과 확률을 직접 사용하여 성능이 우수함 
-Dice-Loss 적용 시도 했으나, tensor shape issue로 추후 다시 적용 예정
+## 🧭 ERD & Flow Chart
 
-2. Semantic segmentation 영역 확장 
-* 눈 두덩이, 볼 등 얼굴의 다른영역도 semantic seg -mentation 하여 메이크업 시뮬레이션 기능 확장 
- 
+<p align="center">
+  <img src="assets/mimo-erd.png" width="700" />
+  <img src="assets/mimo-flowchart.png" width="700" />
+</p>
+
+---
+
+## 📝 프로젝트 회고
+
+- 프론트/백엔드/AI 연동 전체 구조를 이해하고 직접 구현
+- 사용자 중심의 UI 설계와 반복적인 피드백 기반 개선
+- 실제 기획부터 팀 협업, 배포 경험까지 폭넓은 실무 감각 향상
+
+---
 
