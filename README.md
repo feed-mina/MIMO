@@ -18,6 +18,8 @@
 - **기획 목적**:  
   코로나로 오프라인 테스트가 어려워진 상황에서  
   **사용자가 직접 얼굴에 색조를 적용해보며** 화장품을 선택할 수 있는 웹 시뮬레이션 서비스 개발
+- **발표 자료 PDF**: [2022_MIMO_PPT_final.pdf](https://github.com/feed-mina/MIMO/raw/update-readme/2022_MIMO_PPT_final.pdf)
+
 
 ---
 
