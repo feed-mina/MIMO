@@ -18,7 +18,7 @@
 - **기획 목적**:  
   코로나로 오프라인 테스트가 어려워진 상황에서  
   **사용자가 직접 얼굴에 색조를 적용해보며** 화장품을 선택할 수 있는 웹 시뮬레이션 서비스 개발
-- **발표 자료 PDF**: [2022_MIMO_PPT_final.pdf](https://github.com/feed-mina/MIMO/raw/update-readme/2022_MIMO_PPT_final.pdf)
+- **발표 자료 PDF**: [2022_MIMO_PPT_final.pdf](2022_MIMO_PPT_final.pdf)
 
 
 ---
@@ -42,7 +42,6 @@
 <p align="center">
   <img src="assets/mimo-ui-main.png" width="340" />
   <img src="assets/mimo-ui-shot.png" width="340" /><br/>
-  <img src="assets/mimo-ui-cart.png" width="340" />
   <img src="assets/mimo-ui-login.png" width="340" /><br/>
   <img src="assets/mimo-ui-password.png" width="340" />
   <img src="assets/mimo-ui-profile.png" width="340" /><br/>
@@ -108,4 +107,3 @@
 - 실제 기획부터 팀 협업, 배포 경험까지 폭넓은 실무 감각 향상
 
 ---
-
