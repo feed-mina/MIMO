@@ -1,0 +1,207 @@
+{
+  "schema": "feedmina.sdui.template.v1",
+  "id": "mimo-catalog-demo",
+  "name": "MIMO 상품 카드 · 설명용",
+  "version": "0.1.0",
+  "recommendedTier": "free",
+  "runtimeAdapters": [
+    "cloudflare-worker-static"
+  ],
+  "pluginValidation": "strict",
+  "pages": [
+    {
+      "id": "catalog",
+      "sourceKind": "page_key",
+      "title": "MIMO 상품 화면",
+      "route": "/mimo/catalog/",
+      "metadataRef": "embedded:mimo-catalog",
+      "pluginRefs": [],
+      "state": {
+        "detailsOpen": false
+      },
+      "nodes": [
+        {
+          "id": "mimo-root",
+          "name": "MIMO 상품 화면",
+          "type": "Container",
+          "props": {},
+          "style": {
+            "padding": "var(--space-md)"
+          },
+          "states": {},
+          "children": [
+            {
+              "id": "mimo-title",
+              "name": "Heading",
+              "type": "Heading",
+              "props": {
+                "text": "MIMO · 나에게 맞는 색 찾기",
+                "level": 1
+              },
+              "style": {
+                "color": "var(--color-text)"
+              },
+              "states": {},
+              "children": []
+            },
+            {
+              "id": "mimo-notice",
+              "name": "Text",
+              "type": "Text",
+              "props": {
+                "text": "설명용 샘플입니다. 실제 상품 조회·주문·카메라 기능은 연결되지 않았습니다."
+              },
+              "style": {
+                "color": "var(--color-muted-text)"
+              },
+              "states": {},
+              "children": []
+            },
+            {
+              "id": "mimo-products",
+              "name": "추천 상품 묶음",
+              "type": "Grid",
+              "props": {
+                "columns": 2
+              },
+              "style": {
+                "gap": "var(--space-md)"
+              },
+              "states": {},
+              "children": [
+                {
+                  "id": "mimo-product",
+                  "name": "상품 카드",
+                  "type": "Card",
+                  "props": {
+                    "title": "샘플 립 제품",
+                    "description": "실제 판매 상품이 아닌 편집용 예시"
+                  },
+                  "style": {
+                    "backgroundColor": "var(--color-surface)",
+                    "borderColor": "var(--color-border)",
+                    "borderRadius": "var(--radius-md)",
+                    "padding": "var(--space-md)"
+                  },
+                  "states": {},
+                  "children": [
+                    {
+                      "id": "mimo-price",
+                      "name": "Text",
+                      "type": "Text",
+                      "props": {
+                        "text": "예시 가격 12,000원"
+                      },
+                      "style": {
+                        "color": "var(--color-muted-text)"
+                      },
+                      "states": {},
+                      "children": []
+                    },
+                    {
+                      "id": "mimo-detail-button",
+                      "name": "Button",
+                      "type": "Button",
+                      "props": {
+                        "label": "설명 열기",
+                        "variant": "primary"
+                      },
+                      "style": {
+                        "backgroundColor": "var(--color-primary)",
+                        "color": "#ffffff",
+                        "borderRadius": "var(--radius-md)",
+                        "padding": "var(--space-sm)"
+                      },
+                      "states": {},
+                      "events": {
+                        "onClick": {
+                          "action": "toggleState",
+                          "target": "detailsOpen"
+                        }
+                      },
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mimo-details",
+              "name": "Text",
+              "type": "Text",
+              "props": {
+                "text": "이 영역의 문구·색상·배치를 바꿔 보세요. 저장 및 API 연결은 별도입니다."
+              },
+              "style": {
+                "color": "var(--color-muted-text)"
+              },
+              "states": {},
+              "visibleWhen": {
+                "state": "detailsOpen",
+                "equals": true
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "sources": []
+  },
+  "plugins": [],
+  "api": {
+    "endpoints": []
+  },
+  "env": {
+    "vars": [],
+    "secrets": [],
+    "bindings": []
+  },
+  "risks": [
+    "설명용 샘플: 실제 상품 및 개인정보 없음",
+    "서버·DB·카메라 미연결"
+  ],
+  "documentVersion": 2,
+  "theme": {
+    "version": "1.0",
+    "applyToAllScreens": true,
+    "tokens": {
+      "color": {
+        "primary": "#0f766e",
+        "accent": "#f59e0b",
+        "surface": "#ffffff",
+        "background": "#f8fafc",
+        "text": "#111827",
+        "mutedText": "#6b7280",
+        "border": "#e5e7eb",
+        "danger": "#dc2626",
+        "success": "#16a34a"
+      },
+      "typography": {
+        "fontFamily": "Inter, system-ui, sans-serif",
+        "bodySize": "14px",
+        "headingSize": "24px",
+        "captionSize": "12px",
+        "lineHeight": "1.5"
+      },
+      "space": {
+        "xs": "4px",
+        "sm": "8px",
+        "md": "16px",
+        "lg": "24px",
+        "xl": "32px"
+      },
+      "radius": {
+        "sm": "4px",
+        "md": "8px",
+        "lg": "12px"
+      },
+      "shadow": {
+        "sm": "0 1px 2px rgba(15, 23, 42, 0.08)",
+        "md": "0 8px 24px rgba(15, 23, 42, 0.12)"
+      }
+    }
+  }
+}
