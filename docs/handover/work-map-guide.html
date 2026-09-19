@@ -1,0 +1,1370 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>유지보수 및 인수인계 문서</title><base href="file:///home/runner/work/MIMO/MIMO/docs/handover/"><style>
+body{font-family:Arial,"Noto Sans KR",sans-serif;line-height:1.6;color:#111827;max-width:1100px;margin:0 auto;padding:32px;background:#fff}
+h1,h2,h3,h4{color:#111827;page-break-after:avoid} h1{font-size:34px;border-bottom:3px solid #4f46e5;padding-bottom:10px} h2{font-size:26px;margin-top:42px;border-left:6px solid #4f46e5;padding-left:12px} h3{font-size:20px;margin-top:28px}
+p,li,td,th,blockquote{font-size:14px} table{border-collapse:collapse;width:100%;margin:14px 0 24px 0;table-layout:fixed} th,td{border:1px solid #d1d5db;padding:8px 10px;vertical-align:top;word-break:break-word} th{background:#eef2ff} blockquote{margin:16px 0;padding:12px 16px;background:#f9fafb;border-left:4px solid #6366f1} img{max-width:100%;height:auto;display:block;margin:12px auto 20px auto;border:1px solid #e5e7eb} code{background:#f3f4f6;padding:2px 4px;border-radius:4px} a{color:#3730a3;text-decoration:none} hr{border:none;border-top:1px solid #e5e7eb;margin:30px 0} .note{background:#fffbeb;padding:12px;border-left:4px solid #f59e0b} @page{size:A4;margin:14mm 12mm}</style></head><body><h1 id="_1">유지보수 및 인수인계 문서</h1>
+<blockquote>
+<p>대상 저장소: <code>feed-mina/MIMO</code><br />
+분석 브랜치: <code>copilot/screen-code-handover</code><br />
+독자: 프로젝트를 처음 맡는 개발자<br />
+범위: 프런트엔드, 확인 가능한 외부 API/데이터 저장소, 유지보수 절차<br />
+산출물 성격: 현재 저장소에서 확인된 내용만 정리했으며, 저장소 밖 백엔드·DB 스키마는 추측하지 않았습니다.</p>
+</blockquote>
+<p><a id="toc"></a></p>
+<h2 id="_2">문서 안내</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대상</td>
+<td>React 기반 가상 메이크업 웹앱을 처음 유지보수하는 개발자</td>
+</tr>
+<tr>
+<td>활용 방법</td>
+<td>먼저 전체 구조와 화면 흐름을 읽고, 이후 각 기능의 핵심 파일·API·데이터 노드를 따라가며 변경 위치를 찾습니다.</td>
+</tr>
+<tr>
+<td>읽는 순서</td>
+<td>1) <a href="#architecture">전체 구조</a> → 2) <a href="#screens">화면과 컴포넌트</a> → 3) <a href="#api">API</a> → 4) <a href="#db">DB 스키마와 ERD</a> → 5) <a href="#maintenance">유지보수 절차</a></td>
+</tr>
+<tr>
+<td>확인 범위</td>
+<td><code>mimo-frontend/src</code>의 실제 라우트와 컴포넌트, 저장소에 포함된 이미지/문서, 로컬 실행 결과</td>
+</tr>
+<tr>
+<td>제외된 항목</td>
+<td>Spring Boot 서버 소스, MySQL 마이그레이션/모델, <code>localhost:8000</code> AI 서버 구현, 배포 인프라 정의</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_3">빠른 이동</h3>
+<ul>
+<li><a href="#architecture">전체 구조</a></li>
+<li><a href="#screens">화면과 컴포넌트</a></li>
+<li><a href="#screen-home">홈 <code>/</code></a></li>
+<li><a href="#screen-auth">인증 <code>/auth</code></a></li>
+<li><a href="#screen-main">메인 상품 목록 <code>/main</code></a></li>
+<li><a href="#screen-camera">카메라 시뮬레이션 <code>/camera</code></a></li>
+<li><a href="#screen-simulate">시뮬레이션 결과/추천 <code>/simulate</code></a></li>
+<li><a href="#screen-profile">프로필 <code>/profile</code></a></li>
+<li><a href="#screen-password">비밀번호 변경 <code>/changepassword</code></a></li>
+<li><a href="#screen-review">리뷰 <code>/review</code></a></li>
+<li><a href="#api">API</a></li>
+<li><a href="#db">DB 스키마와 ERD</a></li>
+<li><a href="#maintenance">유지보수 절차</a></li>
+</ul>
+<p><a id="architecture"></a></p>
+<h2 id="_4">전체 구조</h2>
+<p>MIMO의 현재 저장소는 <strong>React 프런트엔드만 포함</strong>합니다. 화면 이동, 인증 토큰 보관, Firebase 기반 읽기/쓰기, 그리고 로컬 AI 서버 호출은 프런트엔드 코드에서 직접 처리합니다. README에는 Spring Boot, MySQL, Node.js AI 서버가 언급되지만, 해당 구현 소스는 이 저장소에 없습니다.</p>
+<p><img alt="전체 역할 관계도" src="images/role-overview.svg" /></p>
+<h3 id="_5">계층별 역할</h3>
+<table>
+<thead>
+<tr>
+<th>계층</th>
+<th>실제 위치</th>
+<th>역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>프런트엔드 라우팅</td>
+<td><code>/home/runner/work/MIMO/MIMO/mimo-frontend/src/App.jsx</code></td>
+<td>인증 상태에 따라 접근 가능한 페이지를 나누고, 공통 레이아웃 안에서 페이지를 렌더링합니다.</td>
+</tr>
+<tr>
+<td>공통 레이아웃</td>
+<td><code>components/Layout/*</code></td>
+<td>상단 로고/로그인 버튼, 하단 아이콘 네비게이션을 제공하며 실제 주요 진입점은 <code>/main</code>, <code>/camera</code>, <code>/profile</code>, <code>/review</code>입니다.</td>
+</tr>
+<tr>
+<td>인증 상태</td>
+<td><code>store/auth-context.jsx</code></td>
+<td>Firebase Identity Toolkit에서 받은 <code>idToken</code>을 <code>localStorage</code>의 <code>token</code> 키에 저장하고 로그인 여부를 계산합니다.</td>
+</tr>
+<tr>
+<td>데이터 조회/저장</td>
+<td><code>components/Main/*</code>, <code>components/Review/*</code>, <code>components/Cart/*</code>, <code>data/api.jsx</code></td>
+<td>Firebase Realtime Database의 JSON 노드에 직접 요청합니다.</td>
+</tr>
+<tr>
+<td>AI 시뮬레이션</td>
+<td><code>components/Modeling/camera.js</code>, <code>components/Modeling/upload.js</code></td>
+<td>촬영/업로드한 이미지를 <code>localhost:8000/api/v1/upload</code>, <code>localhost:8000/api/v1/makeup</code>으로 보내고, 응답을 OpenCV.js로 합성합니다.</td>
+</tr>
+<tr>
+<td>저장소 밖 시스템</td>
+<td>README에만 언급</td>
+<td>Spring Boot, MySQL, AI 모델 서버는 현재 저장소만으로는 검증할 수 없습니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_6">실제 데이터 이동</h3>
+<ol>
+<li><strong>로그인/회원가입</strong>: <code>AuthForm</code>이 Firebase Identity Toolkit REST API를 호출하고, 응답의 <code>idToken</code>을 <code>AuthContext.login()</code>에 넘깁니다.  </li>
+<li><strong>상품 목록</strong>: <code>MainList</code>가 <code>/itmes.json</code>을 읽어 추천 상품 카드 목록을 렌더링합니다.  </li>
+<li><strong>리뷰 작성</strong>: <code>ReviewForm</code>이 <code>FormData</code>를 만들어 <code>/createdReviews.json</code>에 POST하지만, 같은 화면의 리뷰 목록은 <code>mockReview.json</code>을 읽기 때문에 자동 반영되지 않습니다.  </li>
+<li><strong>카메라 기능</strong>: <code>camera.js</code>와 <code>upload.js</code>가 업로드 API의 <code>path</code>, 메이크업 API의 <code>prediction</code>, <code>imageArray</code>를 받아 클라이언트에서 색을 입힙니다.</li>
+</ol>
+<h3 id="_7">저장소에서 확인한 구조적 주의점</h3>
+<ul>
+<li><code>FooterNav</code>와 <code>MainNavigation</code>에는 <code>/cart</code> 링크가 있지만 <code>App.jsx</code>에는 <code>/cart</code> 라우트가 없습니다. 현재 클릭 시 와일드카드 경로 처리로 <code>/main</code>으로 돌아갑니다.</li>
+<li><code>data/APIUtils.js</code>는 <code>../constants</code>를 import하지만 해당 파일이 없고, 현재 앱 런타임에서는 이 모듈이 연결되지 않습니다.</li>
+<li><code>camera.js</code>는 함수형 컴포넌트 안에 <code>this.setState</code>를 사용해 현재 코드 그대로는 정상 동작 보장이 어렵습니다.</li>
+<li><code>mimo-modeling</code> 폴더에는 분석 가능한 소스가 없습니다.</li>
+</ul>
+<p><a id="screens"></a></p>
+<h2 id="_8">화면과 컴포넌트</h2>
+<p><a id="screen-home"></a></p>
+<h2 id="1">화면 1. 홈 <code>/</code></h2>
+<p>홈 화면은 서비스 소개 이미지와 가입 안내 문구만 보여주는 랜딩 페이지입니다. <code>props.authenticated</code>가 참이면 <code>useEffect</code>에서 <code>/main</code>으로 이동하도록 작성되어 있지만, 현재 <code>App.jsx</code>에서 해당 props는 전달하지 않습니다.</p>
+<p><img alt="홈 화면 실제 실행 캡처" src="images/home-page-actual.png" /></p>
+<p><img alt="홈 핵심 컴포넌트 확대" src="images/home-hero-component.png" /></p>
+<h3 id="_9">핵심 파일과 기능</h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>책임</th>
+<th>기능에서 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>components/Home/Home.jsx</code></td>
+<td>랜딩 페이지 렌더링</td>
+<td>서비스 인트로 이미지, 로고, 약관 안내 문구를 출력합니다.</td>
+</tr>
+<tr>
+<td><code>App.jsx</code></td>
+<td>루트 라우팅</td>
+<td><code>/</code> 경로에서 <code>Home</code>을 렌더링합니다.</td>
+</tr>
+<tr>
+<td><code>components/Layout/Layout.jsx</code></td>
+<td>공통 외곽</td>
+<td>홈 화면도 동일한 상·하단 네비게이션 레이아웃 안에 배치합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_10">함수·컴포넌트 계약</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>입력</th>
+<th>처리</th>
+<th>반환/부수 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Home(props)</code></td>
+<td><code>props.authenticated</code>(불리언, 선택적)</td>
+<td>최초 렌더링 시 인증됨으로 판단하면 <code>navigate('/main')</code>을 시도합니다.</td>
+<td>JSX를 반환하고, 조건이 맞으면 라우트 이동 부수 효과를 냅니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_11">화면 연결</h3>
+<ul>
+<li><strong>입력 위치</strong>: 직접 입력 요소는 없습니다.  </li>
+<li><strong>사용자 행동</strong>: 상단 로고, 하단 네비게이션을 통해 다른 화면으로 이동합니다.  </li>
+<li><strong>결과 표시 영역</strong>: 중앙 인트로 이미지와 로고, 하단 약관 안내 텍스트입니다.</li>
+</ul>
+<h3 id="api-db">사용 API / DB</h3>
+<p>이 화면은 API를 직접 호출하지 않습니다.</p>
+<hr />
+<p><a id="screen-auth"></a></p>
+<h2 id="2-auth">화면 2. 인증 <code>/auth</code></h2>
+<p>인증 화면은 이메일/비밀번호 로그인과 회원가입을 같은 폼에서 전환하며, 별도로 Google 팝업 로그인 버튼을 제공합니다. 로그인 성공 시 <code>idToken</code>을 저장하고 <code>/main</code>으로 이동합니다.</p>
+<p><img alt="인증 화면 실제 실행 캡처" src="images/auth-page-actual.png" /></p>
+<p><img alt="인증 폼 확대" src="images/auth-form-component.png" /></p>
+<h3 id="_12">핵심 파일과 기능</h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>책임</th>
+<th>기능에서 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pages/AuthPage.jsx</code></td>
+<td>페이지 래퍼</td>
+<td>인증 라우트에서 <code>AuthForm</code>만 렌더링합니다.</td>
+</tr>
+<tr>
+<td><code>components/Auth/AuthForm.jsx</code></td>
+<td>인증 입력과 분기 처리</td>
+<td>로그인/회원가입 URL 분기, Firebase REST 요청, Google 팝업 로그인을 수행합니다.</td>
+</tr>
+<tr>
+<td><code>store/auth-context.jsx</code></td>
+<td>인증 상태 저장</td>
+<td>토큰을 <code>localStorage</code>에 저장하고 <code>isLoggedIn</code>을 계산합니다.</td>
+</tr>
+<tr>
+<td><code>fbase.js</code></td>
+<td>Firebase 앱 초기화</td>
+<td>Firebase Auth 인스턴스를 만들고 Google 팝업 로그인에 사용합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_13">함수·컴포넌트 계약</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>입력</th>
+<th>처리</th>
+<th>반환값 / 부수 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>switchAuthModeHandler()</code></td>
+<td>없음</td>
+<td><code>isLogin</code> 상태를 반전합니다.</td>
+<td>버튼 문구와 제출 URL이 바뀝니다.</td>
+</tr>
+<tr>
+<td><code>submitHandler(event)</code></td>
+<td>폼의 <code>email</code>, <code>password</code></td>
+<td><code>isLogin</code>이 참이면 <code>accounts:signInWithPassword</code>, 거짓이면 <code>accounts:signUp</code>을 호출합니다.</td>
+<td>성공 시 <code>authCtx.login(data.idToken)</code>, <code>navigate('/main')</code>; 실패 시 alert를 띄웁니다.</td>
+</tr>
+<tr>
+<td><code>onSocialClick()</code></td>
+<td>없음</td>
+<td><code>GoogleAuthProvider</code>로 팝업 로그인을 시도합니다.</td>
+<td>성공 시 <code>data.user</code>를 내부 state에 저장하지만 현재 후속 화면 이동은 없습니다.</td>
+</tr>
+<tr>
+<td><code>AuthContext.login(token)</code></td>
+<td><code>token</code> 문자열</td>
+<td>state와 <code>localStorage['token']</code>을 함께 갱신합니다.</td>
+<td>이후 보호 라우트 접근 가능 상태가 됩니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_14">동작 흐름도</h3>
+<ol>
+<li>사용자가 이메일과 비밀번호를 입력합니다.  </li>
+<li><strong>조건 분기</strong>: <code>isLogin</code>이 <code>true</code>면 로그인 API, <code>false</code>면 회원가입 API를 호출합니다.  </li>
+<li>응답이 성공이면 JSON을 읽고 <code>idToken</code>을 저장한 뒤 <code>/main</code>으로 이동합니다.  </li>
+<li>응답이 실패면 <code>Authentication failed!</code> 예외를 만들어 alert로 노출합니다.  </li>
+<li>Google 버튼은 별도 병렬 경로이며, Firebase JS SDK의 팝업 인증을 사용합니다.</li>
+</ol>
+<h3 id="_15">역할 관계</h3>
+<ul>
+<li>화면 요소 <strong>Email/Password 입력칸</strong> → <code>emailInputRef</code>, <code>passwordInputRef</code>  </li>
+<li><strong>로그인/가입 버튼</strong> → <code>submitHandler()</code> → Firebase Identity Toolkit  </li>
+<li><strong>Google 버튼</strong> → <code>signInWithPopup(authService, provider)</code>  </li>
+<li><strong>성공 결과</strong> → <code>auth-context.jsx</code>의 <code>token</code>, <code>isLoggedIn</code> 변경 → 보호 라우트 열림</li>
+</ul>
+<h3 id="api">사용 API</h3>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>경로</th>
+<th>요청 필드</th>
+<th>코드가 실제 사용하는 응답 필드</th>
+<th>사용 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=...</code></td>
+<td><code>email</code>, <code>password</code>, <code>returnSecureToken</code></td>
+<td><code>idToken</code></td>
+<td>로그인 제출</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=...</code></td>
+<td><code>email</code>, <code>password</code>, <code>returnSecureToken</code></td>
+<td><code>idToken</code></td>
+<td>회원가입 제출</td>
+</tr>
+<tr>
+<td>SDK popup</td>
+<td>Firebase Auth Google provider</td>
+<td>없음</td>
+<td><code>data.user</code></td>
+<td>Google 소셜 로그인</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_16">읽거나 쓰는 데이터</h3>
+<table>
+<thead>
+<tr>
+<th>저장소</th>
+<th>키/필드</th>
+<th>읽기/쓰기</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>localStorage</code></td>
+<td><code>token</code></td>
+<td>쓰기/읽기/삭제</td>
+<td>인증 토큰 영속화</td>
+</tr>
+<tr>
+<td>Firebase Auth <code>currentUser</code></td>
+<td><code>displayName</code>, <code>photoURL</code> 등</td>
+<td>읽기</td>
+<td>프로필 화면에서 다시 사용</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><a id="screen-main"></a></p>
+<h2 id="3-main">화면 3. 메인 상품 목록 <code>/main</code></h2>
+<p>메인 화면은 이벤트 배너와 추천 상품 목록을 렌더링합니다. 데이터는 Firebase Realtime Database의 <code>/itmes.json</code>에서 가져오며, 로딩/오류/정상 상태가 분기됩니다.</p>
+<p><img alt="메인 화면 실제 실행 캡처" src="images/main-page-actual.png" /></p>
+<p><img alt="상품 목록 확대" src="images/main-product-list-component.png" /></p>
+<h3 id="_17">핵심 파일과 기능</h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>책임</th>
+<th>기능에서 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pages/Mainpages.jsx</code></td>
+<td>페이지 래퍼</td>
+<td>실질적인 데이터 처리는 하지 않고 <code>MainList</code>를 렌더링합니다.</td>
+</tr>
+<tr>
+<td><code>components/Main/MainList.jsx</code></td>
+<td>상품 목록 로딩과 렌더링</td>
+<td><code>/itmes.json</code> 호출, JSON을 배열로 변환, 상품 카드 UI를 만듭니다.</td>
+</tr>
+<tr>
+<td><code>components/Layout/nav/FooterNav.jsx</code></td>
+<td>주요 진입점 제공</td>
+<td>하단 홈/카메라/리뷰/프로필 아이콘으로 이동합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_18">함수·컴포넌트 계약</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>입력</th>
+<th>처리</th>
+<th>반환값 / 부수 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MainList()</code></td>
+<td>props는 실질적으로 미사용</td>
+<td>마운트 시 <code>fetchItems()</code>를 실행합니다.</td>
+<td>JSX를 반환하고 내부 state(<code>items</code>, <code>isLoading</code>, <code>httpError</code>)를 갱신합니다.</td>
+</tr>
+<tr>
+<td><code>fetchItems()</code></td>
+<td>없음</td>
+<td><code>/itmes.json</code> 응답을 순회해 <code>{id,title,price,content,imgUrl}</code> 배열로 변환합니다.</td>
+<td>성공 시 목록을 그리며, 실패 시 오류 문구를 화면에 표시합니다.</td>
+</tr>
+<tr>
+<td><code>MainListItem({ item })</code></td>
+<td><code>item.Url</code>, <code>item.imgUrl</code>, <code>item.title</code>, <code>item.price</code>, <code>item.content</code></td>
+<td>카드 단위 표시를 만듭니다.</td>
+<td><code>&lt;a&gt;</code> 링크와 상품 요약 영역을 반환합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_19">동작 흐름도</h3>
+<ol>
+<li>화면 진입 시 <code>isLoading=true</code>로 시작합니다.  </li>
+<li>Firebase 요청을 보냅니다.  </li>
+<li><strong>실패 분기</strong>: <code>response.ok</code>가 거짓이면 오류를 던지고 <code>httpError</code>를 렌더링합니다.  </li>
+<li><strong>성공 분기</strong>: 각 노드를 상품 카드용 구조로 변환해 <code>items</code>에 저장합니다.  </li>
+<li>로딩이 끝나면 이벤트 배너와 상품 리스트를 출력합니다.</li>
+</ol>
+<h3 id="_20">화면 연결</h3>
+<ul>
+<li><strong>상품 이미지/제목/가격/설명</strong> → <code>responseData[key].imgUrl/title/price/content</code>  </li>
+<li><strong>상품 카드 링크</strong> → <code>item.Url</code>을 사용하지만 현재 데이터 적재 시 <code>Url</code> 필드는 매핑하지 않아 실제 링크가 비어 있을 가능성이 큽니다.  </li>
+<li><strong>오류 영역</strong> → 예외 메시지 문자열을 그대로 렌더링합니다.</li>
+</ul>
+<h3 id="api-db_1">사용 API / DB</h3>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>경로</th>
+<th>요청</th>
+<th>응답에서 화면이 쓰는 필드</th>
+<th>사용 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td><code>https://mimo-49f6d-default-rtdb.firebaseio.com/itmes.json</code></td>
+<td>없음</td>
+<td><code>{[id]: {title, price, content, imgUrl}}</code></td>
+<td>추천 상품 목록</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_21">읽는 데이터 노드</h3>
+<table>
+<thead>
+<tr>
+<th>노드</th>
+<th>필드</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/itmes/{itemId}</code></td>
+<td><code>title</code>, <code>price</code>, <code>content</code>, <code>imgUrl</code></td>
+<td>메인 화면 카드 구성에 사용합니다.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><a id="screen-camera"></a></p>
+<h2 id="4-camera">화면 4. 카메라 시뮬레이션 <code>/camera</code></h2>
+<p>카메라 화면은 웹캠을 열고 현재 프레임을 캔버스에 그린 뒤, 업로드/메이크업 API를 순차 호출해 립 또는 헤어 색상을 입히려는 목적의 화면입니다. 현재 저장소 코드 기준으로는 가장 복잡하지만 구현 미완성 흔적도 가장 많습니다.</p>
+<p><img alt="카메라 화면(저장소 제공 스크린샷)" src="images/camera-page-repo.png" /></p>
+<p><img alt="카메라 제어 영역 확대" src="images/camera-controls-component.png" /></p>
+<h3 id="_22">핵심 파일과 기능</h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>책임</th>
+<th>기능에서 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>components/Modeling/camera.js</code></td>
+<td>웹캠 촬영형 시뮬레이터</td>
+<td>브라우저 카메라 접근, 캔버스 캡처, 업로드/메이크업 API 호출, 색상/부위 선택 UI를 담당합니다.</td>
+</tr>
+<tr>
+<td><code>components/Modeling/upload.js</code></td>
+<td>파일 업로드형 시뮬레이터</td>
+<td>이미지 파일 선택, 미리보기, 업로드 후 OpenCV.js 합성 흐름을 class component로 구현합니다.</td>
+</tr>
+<tr>
+<td><code>components/Modeling/constants.jsx</code></td>
+<td>링크 상수</td>
+<td><code>CAMERAIMAGE</code>, <code>PROD</code> 등 시뮬레이션 관련 링크 값을 제공합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_23">함수·컴포넌트 계약</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>입력</th>
+<th>처리</th>
+<th>반환값 / 부수 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getVideo()</code></td>
+<td>없음</td>
+<td><code>navigator.mediaDevices.getUserMedia({video:{width:1080,height:1080}})</code>를 호출합니다.</td>
+<td>성공 시 <code>&lt;video&gt;</code>에 stream을 연결하고, 실패 시 콘솔에만 에러를 남깁니다.</td>
+</tr>
+<tr>
+<td><code>takePhoto()</code></td>
+<td>현재 비디오 프레임</td>
+<td>캔버스에 프레임을 그려 data URL을 만들고 <code>FormData</code>에 <code>file</code>을 추가해 업로드 API를 호출합니다.</td>
+<td><code>hasPhoto=true</code>, 업로드 요청, 이후 메이크업 요청 부수 효과가 발생합니다.</td>
+</tr>
+<tr>
+<td><code>ColorChange(event)</code></td>
+<td><code>event.target.value</code> (<code>#RRGGBB</code>)</td>
+<td>선택 색을 state에 저장합니다.</td>
+<td>이후 Apply 단계에서 사용됩니다.</td>
+</tr>
+<tr>
+<td><code>featureChange(event)</code></td>
+<td><code>lip</code> 또는 <code>hair</code></td>
+<td>선택 부위를 state에 저장합니다.</td>
+<td>이후 Apply 단계 조건 분기에 사용됩니다.</td>
+</tr>
+<tr>
+<td><code>Upload.onClickHandler()</code></td>
+<td>선택한 파일</td>
+<td>업로드 API → 메이크업 API를 순차 호출합니다.</td>
+<td><code>path</code>, <code>prediction</code>, <code>image</code>를 class state에 넣습니다.</td>
+</tr>
+<tr>
+<td><code>Options.onApplyHandler()</code></td>
+<td><code>prediction</code>, <code>image</code>, <code>feature</code>, <code>color</code></td>
+<td>부위 id에 따라 마스크를 만들고 OpenCV.js로 원본 이미지와 합성합니다.</td>
+<td><code>canvasOutput</code>에 결과를 렌더링합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_24">실제 조건 분기를 담은 흐름도</h3>
+<p><img alt="카메라·업로드 기능 흐름도" src="images/camera-flow.svg" /></p>
+<h3 id="_25">화면 요소와 코드 연결</h3>
+<table>
+<thead>
+<tr>
+<th>화면 요소</th>
+<th>연결된 상태/함수</th>
+<th>입력</th>
+<th>결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Take a Picture</code> 버튼</td>
+<td><code>takePhoto()</code></td>
+<td>현재 비디오 프레임</td>
+<td>캔버스 이미지 생성, 업로드 시도</td>
+</tr>
+<tr>
+<td><code>Select feature</code> 드롭다운</td>
+<td><code>featureChange()</code> / <code>Options.handleFeatureChange()</code></td>
+<td><code>lip</code>, <code>hair</code></td>
+<td>Apply 때 칠할 파트 id 조건이 달라집니다.</td>
+</tr>
+<tr>
+<td>색상 선택 input</td>
+<td><code>ColorChange()</code> / <code>Options.handleColorChange()</code></td>
+<td>hex 색상 문자열</td>
+<td>RGB로 변환되어 합성 색으로 사용됩니다.</td>
+</tr>
+<tr>
+<td><code>Apply</code> 버튼</td>
+<td><code>Options.onApplyHandler()</code></td>
+<td>선택한 부위와 색, 예측 배열</td>
+<td><code>canvasOutput</code>에 합성 이미지를 그립니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api_1">사용 API</h3>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>경로</th>
+<th>요청 필드</th>
+<th>코드가 실제 쓰는 응답 필드</th>
+<th>사용 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>http://localhost:8000/api/v1/upload</code></td>
+<td><code>FormData(file)</code></td>
+<td><code>path</code></td>
+<td>촬영/업로드 직후</td>
+</tr>
+<tr>
+<td>POST</td>
+<td><code>http://localhost:8000/api/v1/makeup</code></td>
+<td><code>{ path }</code></td>
+<td><code>prediction</code>, <code>imageArray</code></td>
+<td>업로드 성공 후</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_26">읽거나 쓰는 데이터</h3>
+<p>이 화면은 브라우저 state와 캔버스만 직접 갱신하며, Firebase DB에는 쓰지 않습니다.</p>
+<h3 id="_27">유지보수 메모</h3>
+<ul>
+<li><code>camera.js</code>는 <code>setFile(file)</code> 직후 <code>image_file</code> state를 바로 읽어 <code>FormData</code>에 넣기 때문에 타이밍 이슈가 있습니다.  </li>
+<li>같은 파일에서 <code>this.setState(...)</code>를 사용하고 있어 함수형 컴포넌트 문맥과 맞지 않습니다.  </li>
+<li><code>upload.js</code>의 OpenCV 합성 로직은 실제 기능 설명 근거로 유효하지만, <code>localhost:8000</code> 구현이 없어 서버 계약의 전체 스펙은 확인할 수 없습니다.</li>
+</ul>
+<hr />
+<p><a id="screen-simulate"></a></p>
+<h2 id="5-simulate">화면 5. 시뮬레이션 결과/추천 <code>/simulate</code></h2>
+<p><code>/simulate</code>는 로그인 사용자 정보를 콘솔에 출력하고, 촬영 이미지 자리와 추천 상품 이미지 링크를 배치한 정적 성격의 화면입니다. 현재 구현에서는 실제 시뮬레이션 결과를 계산하기보다 다음 행동을 안내하는 구성에 가깝습니다.</p>
+<p><img alt="시뮬레이션 관련 저장소 스크린샷" src="images/camera-page-repo.png" /></p>
+<h3 id="_28">핵심 파일과 기능</h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>책임</th>
+<th>기능에서 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>components/Modeling/Simulate.jsx</code></td>
+<td>추천/후속 행동 화면</td>
+<td>Firebase <code>currentUser</code>의 provider 정보를 콘솔에 출력하고 이미지/상품 링크를 보여줍니다.</td>
+</tr>
+<tr>
+<td><code>components/Modeling/constants.jsx</code></td>
+<td>링크 정의</td>
+<td><code>CAMERAIMAGE</code>, <code>PROD</code> 상수를 <code>/cameraimage</code>, <code>/prod:id</code> 같은 링크로 제공합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_29">함수·컴포넌트 계약</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>입력</th>
+<th>처리</th>
+<th>반환값 / 부수 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Simulate()</code></td>
+<td>Firebase <code>user</code></td>
+<td><code>user !== null</code>일 때 프로필 관련 값과 providerData를 읽어 콘솔 로그를 남깁니다.</td>
+<td>추천 상품 이미지와 텍스트가 포함된 JSX를 반환합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api-db_2">사용 API / DB</h3>
+<p>직접 네트워크 요청은 없고, Firebase Auth의 현재 로그인 사용자 객체만 읽습니다.</p>
+<hr />
+<p><a id="screen-profile"></a></p>
+<h2 id="6-profile">화면 6. 프로필 <code>/profile</code></h2>
+<p>프로필 화면은 로그인한 사용자의 프로필 사진과 이름, 그리고 비밀번호 변경/장바구니/리뷰 진입 링크를 제공합니다. 표시 데이터는 Firebase Auth의 <code>currentUser</code>에서 읽습니다.</p>
+<p><img alt="프로필 화면(저장소 제공 스크린샷)" src="images/profile-page-repo.png" /></p>
+<p><img alt="프로필 메뉴 확대" src="images/profile-menu-component.png" /></p>
+<h3 id="_30">핵심 파일과 기능</h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>책임</th>
+<th>기능에서 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>components/Profile/UserProfile.jsx</code></td>
+<td>프로필 헤더 렌더링</td>
+<td><code>photoURL</code>, <code>displayName</code>을 읽어 프로필 영역을 출력합니다.</td>
+</tr>
+<tr>
+<td><code>components/Profile/ProfileContent.jsx</code></td>
+<td>하위 메뉴</td>
+<td><code>/cart</code>, <code>/review</code> 링크를 배치합니다.</td>
+</tr>
+<tr>
+<td><code>App.jsx</code></td>
+<td>접근 제어</td>
+<td>로그인 상태일 때만 <code>/profile</code> 라우트를 노출합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_31">함수·컴포넌트 계약</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>입력</th>
+<th>처리</th>
+<th>반환값 / 부수 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>UserProfile()</code></td>
+<td><code>authCtx.isLoggedIn</code>, <code>authService.currentUser</code></td>
+<td>로그인 상태면 프로필 이미지와 이름을 출력합니다.</td>
+<td>JSX를 반환합니다.</td>
+</tr>
+<tr>
+<td><code>ProfileContent()</code></td>
+<td>없음</td>
+<td>장바구니/리뷰 링크 블록을 표시합니다.</td>
+<td>실제 라우트 존재 여부와 무관하게 링크를 렌더링합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_32">화면 연결</h3>
+<ul>
+<li><strong>프로필 사진 영역</strong> → <code>authService.currentUser.photoURL</code>  </li>
+<li><strong>이름 제목</strong> → <code>authService.currentUser.displayName</code>  </li>
+<li><strong>패스워드 변경 메뉴</strong> → <code>/changepassword</code>  </li>
+<li><strong>리뷰쓰기 메뉴</strong> → <code>/review</code>  </li>
+<li><strong>장바구니 메뉴</strong> → <code>/cart</code> (현재 App 라우트 미연결)</li>
+</ul>
+<h3 id="api-db_3">사용 API / DB</h3>
+<p>네트워크 호출은 없고 Firebase Auth 메모리 상태만 읽습니다.</p>
+<hr />
+<p><a id="screen-password"></a></p>
+<h2 id="7-changepassword">화면 7. 비밀번호 변경 <code>/changepassword</code></h2>
+<p>비밀번호 변경 화면은 새 비밀번호 한 개만 입력받아 Firebase Identity Toolkit의 계정 업데이트 API를 호출합니다. 성공/실패 분기 메시지 없이, 요청 완료 후 홈으로 이동하는 단순 흐름입니다.</p>
+<p><img alt="비밀번호 변경 화면(저장소 제공 스크린샷)" src="images/password-page-repo.png" /></p>
+<p><img alt="비밀번호 변경 폼 확대" src="images/password-form-component.png" /></p>
+<h3 id="_33">핵심 파일과 기능</h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>책임</th>
+<th>기능에서 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>components/Profile/ProfileForm.jsx</code></td>
+<td>비밀번호 변경 폼</td>
+<td>새 비밀번호를 읽어 계정 업데이트 REST API를 호출합니다.</td>
+</tr>
+<tr>
+<td><code>store/auth-context.jsx</code></td>
+<td>토큰 공급</td>
+<td>현재 토큰을 요청 본문 <code>idToken</code>으로 전달합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_34">함수·컴포넌트 계약</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>입력</th>
+<th>처리</th>
+<th>반환값 / 부수 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>submitHandler(event)</code></td>
+<td><code>new-password</code> 입력값, <code>authCtx.token</code></td>
+<td><code>accounts:update</code> API에 <code>idToken</code>, <code>password</code>, <code>returnSecureToken:false</code>를 전송합니다.</td>
+<td>응답 본문 확인 없이 <code>navigate('/', {replace:true})</code>를 호출합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="api_2">사용 API</h3>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>경로</th>
+<th>요청 필드</th>
+<th>코드가 실제 쓰는 응답 필드</th>
+<th>사용 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>https://identitytoolkit.googleapis.com/v1/accounts:update?key=...</code></td>
+<td><code>idToken</code>, <code>password</code>, <code>returnSecureToken:false</code></td>
+<td>없음</td>
+<td>비밀번호 변경 제출</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><a id="screen-review"></a></p>
+<h2 id="8-review">화면 8. 리뷰 <code>/review</code></h2>
+<p>리뷰 화면은 이미지 첨부, 닉네임, 별점, 본문을 입력받는 작성 폼과 리뷰 목록을 함께 보여줍니다. 하지만 목록은 Firebase에서 다시 읽지 않고 <code>mockReview.json</code>을 사용하므로, 저장 성공과 목록 갱신이 연결되어 있지 않습니다.</p>
+<p><img alt="리뷰 화면(저장소 제공 스크린샷)" src="images/review-page-repo.png" /></p>
+<p><img alt="리뷰 폼 확대" src="images/review-form-component.png" /></p>
+<h3 id="_35">핵심 파일과 기능</h3>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>책임</th>
+<th>기능에서 하는 일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>components/Review/Review.jsx</code></td>
+<td>리뷰 화면 조립</td>
+<td><code>ReviewForm</code>과 <code>ReviewList</code>를 배치하고 삭제 핸들러를 가집니다.</td>
+</tr>
+<tr>
+<td><code>components/Review/ReviewForm.jsx</code></td>
+<td>작성 폼</td>
+<td>파일, 닉네임, 별점, 리뷰 본문을 state에 모아 <code>FormData</code>를 전송합니다.</td>
+</tr>
+<tr>
+<td><code>components/Review/FileInput.jsx</code></td>
+<td>이미지 선택과 미리보기</td>
+<td>파일 객체를 부모로 올리고 <code>URL.createObjectURL()</code>로 미리보기를 만듭니다.</td>
+</tr>
+<tr>
+<td><code>components/Review/RatingInput.jsx</code> / <code>Rating.jsx</code></td>
+<td>별점 입력</td>
+<td>hover/select 상태를 별 문자 UI로 보여줍니다.</td>
+</tr>
+<tr>
+<td><code>components/Review/ReviewList.jsx</code></td>
+<td>목록 표시</td>
+<td><code>mockReview.json</code> 배열을 순회해 항목을 렌더링합니다.</td>
+</tr>
+<tr>
+<td><code>data/api.jsx</code></td>
+<td>리뷰 API helper</td>
+<td><code>/createdReviews.json</code> POST와 <code>/review.json</code> GET helper를 제공합니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_36">함수·컴포넌트 계약</h3>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>입력</th>
+<th>처리</th>
+<th>반환값 / 부수 효과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>handleChange(name, value)</code></td>
+<td>필드명, 값</td>
+<td>폼 state의 해당 키만 갱신합니다.</td>
+<td><code>values</code> state가 변경됩니다.</td>
+</tr>
+<tr>
+<td><code>handleSubmit(e)</code></td>
+<td><code>values.content</code>, <code>values.imgUrl</code>, <code>values.nickname</code>, <code>values.rating</code></td>
+<td><code>FormData</code>를 만들고 <code>createReviews(formData)</code>를 호출합니다.</td>
+<td>성공 후 입력값을 초기화합니다.</td>
+</tr>
+<tr>
+<td><code>FileInput.handleChange(e)</code></td>
+<td>선택한 파일</td>
+<td>첫 번째 파일을 부모 <code>onChange</code>로 전달합니다.</td>
+<td>미리보기 URL 생성의 입력이 됩니다.</td>
+</tr>
+<tr>
+<td><code>RatingInput</code></td>
+<td>현재 점수</td>
+<td>hover와 click 이벤트를 별점 값으로 변환합니다.</td>
+<td>부모의 <code>rating</code>을 갱신합니다.</td>
+</tr>
+<tr>
+<td><code>handleDelete(id)</code></td>
+<td>삭제할 review id</td>
+<td>mock 배열에서 해당 항목을 제외합니다.</td>
+<td>화면 목록만 바뀌고 서버 삭제는 하지 않습니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_37">실제 분기 흐름</h3>
+<ol>
+<li>사용자가 이미지, 닉네임, 별점, 내용을 입력합니다.  </li>
+<li>파일 선택 시 <code>FileInput</code>이 브라우저 로컬 미리보기를 만듭니다.  </li>
+<li>제출 시 <code>FormData</code>를 만들어 <code>/createdReviews.json</code>으로 보냅니다.  </li>
+<li>성공 후 폼 state는 초기화됩니다.  </li>
+<li><strong>별도 분기</strong>: 화면 하단 목록은 네트워크 응답과 무관하게 <code>mockReview.json</code>만 보여줍니다.  </li>
+<li>삭제 버튼은 서버가 아니라 브라우저 메모리 목록만 지웁니다.</li>
+</ol>
+<h3 id="_38">역할 관계도</h3>
+<ul>
+<li>작성 입력 필드 → <code>ReviewForm.values</code>  </li>
+<li>이미지 선택 → <code>FileInput</code> → <code>values.imgUrl</code>(File 객체)  </li>
+<li>별점 클릭 → <code>RatingInput</code> → <code>values.rating</code>  </li>
+<li>제출 버튼 → <code>createReviews()</code> → <code>/createdReviews.json</code>  </li>
+<li>목록 영역 → <code>mockReview.json</code> → <code>ReviewListItem</code></li>
+</ul>
+<h3 id="api_3">사용 API</h3>
+<table>
+<thead>
+<tr>
+<th>메서드</th>
+<th>경로</th>
+<th>요청 필드</th>
+<th>코드가 실제 쓰는 응답 필드</th>
+<th>사용 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>POST</td>
+<td><code>https://mimo-49f6d-default-rtdb.firebaseio.com/createdReviews.json</code></td>
+<td><code>FormData(content, imgUrl, nickname, rating)</code></td>
+<td>없음</td>
+<td>리뷰 작성 저장</td>
+</tr>
+<tr>
+<td>GET</td>
+<td><code>https://mimo-49f6d-default-rtdb.firebaseio.com/review.json</code></td>
+<td>없음</td>
+<td>helper는 body 전체를 반환하지만 현재 화면 미사용</td>
+<td>잠재적 리뷰 조회 helper</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><a id="api"></a></p>
+<h2 id="apiapplication-programming-interface">API(Application Programming Interface, 프로그램의 요청·응답 창구)</h2>
+<p>현재 저장소에서 실제로 확인된 API만 정리했습니다. 응답 필드는 <strong>코드가 실제 읽는 값만</strong> 적었습니다.</p>
+<table>
+<thead>
+<tr>
+<th>영역</th>
+<th>메서드</th>
+<th>경로</th>
+<th>요청 필드</th>
+<th>응답 필드(실사용)</th>
+<th>호출 파일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>로그인</td>
+<td>POST</td>
+<td><code>accounts:signInWithPassword</code></td>
+<td><code>email</code>, <code>password</code>, <code>returnSecureToken</code></td>
+<td><code>idToken</code></td>
+<td><code>components/Auth/AuthForm.jsx</code></td>
+</tr>
+<tr>
+<td>회원가입</td>
+<td>POST</td>
+<td><code>accounts:signUp</code></td>
+<td><code>email</code>, <code>password</code>, <code>returnSecureToken</code></td>
+<td><code>idToken</code></td>
+<td><code>components/Auth/AuthForm.jsx</code></td>
+</tr>
+<tr>
+<td>비밀번호 변경</td>
+<td>POST</td>
+<td><code>accounts:update</code></td>
+<td><code>idToken</code>, <code>password</code>, <code>returnSecureToken:false</code></td>
+<td>없음</td>
+<td><code>components/Profile/ProfileForm.jsx</code></td>
+</tr>
+<tr>
+<td>상품 목록</td>
+<td>GET</td>
+<td><code>/itmes.json</code></td>
+<td>없음</td>
+<td><code>title</code>, <code>price</code>, <code>content</code>, <code>imgUrl</code></td>
+<td><code>components/Main/MainList.jsx</code></td>
+</tr>
+<tr>
+<td>리뷰 저장</td>
+<td>POST</td>
+<td><code>/createdReviews.json</code></td>
+<td><code>content</code>, <code>imgUrl</code>, <code>nickname</code>, <code>rating</code></td>
+<td>없음</td>
+<td><code>components/Review/ReviewForm.jsx</code>, <code>data/api.jsx</code></td>
+</tr>
+<tr>
+<td>리뷰 조회 helper</td>
+<td>GET</td>
+<td><code>/review.json</code></td>
+<td>없음</td>
+<td>body 전체</td>
+<td><code>data/api.jsx</code></td>
+</tr>
+<tr>
+<td>장바구니 주문</td>
+<td>POST</td>
+<td><code>/cart.json</code></td>
+<td><code>user</code>, <code>orderedItems</code></td>
+<td>없음</td>
+<td><code>components/Cart/Cart.jsx</code></td>
+</tr>
+<tr>
+<td>피부 정보 helper</td>
+<td>GET</td>
+<td><code>/detail/1.json</code></td>
+<td>없음</td>
+<td>body 전체</td>
+<td><code>data/api.jsx</code></td>
+</tr>
+<tr>
+<td>이미지 업로드</td>
+<td>POST</td>
+<td><code>http://localhost:8000/api/v1/upload</code></td>
+<td><code>FormData(file)</code></td>
+<td><code>path</code></td>
+<td><code>components/Modeling/camera.js</code>, <code>components/Modeling/upload.js</code></td>
+</tr>
+<tr>
+<td>메이크업 예측</td>
+<td>POST</td>
+<td><code>http://localhost:8000/api/v1/makeup</code></td>
+<td><code>{ path }</code></td>
+<td><code>prediction</code>, <code>imageArray</code></td>
+<td><code>components/Modeling/camera.js</code>, <code>components/Modeling/upload.js</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="api_4">API 유지보수 포인트</h3>
+<ul>
+<li><code>localhost:8000</code> 계약은 프런트 코드 기준으로만 확인됐고 서버 구현은 없습니다.  </li>
+<li>리뷰 저장은 <code>FormData</code>를 보내면서도 <code>Content-Type: application/json</code> 헤더를 설정해 계약 불일치 가능성이 있습니다.  </li>
+<li><code>APIUtils.js</code>는 별도 백엔드(<code>API_BASE_URL</code>) 연동 의도를 보이지만 현재 앱에서 활성 연결되지 않습니다.</li>
+</ul>
+<p><a id="db"></a></p>
+<h2 id="dbdatabase-erdentity-relationship-diagram">DB(Database, 데이터베이스) 스키마와 ERD(Entity Relationship Diagram, 데이터 관계도)</h2>
+<p>이 저장소에는 SQL 마이그레이션, JPA 엔티티, Prisma/TypeORM 모델 같은 <strong>정식 스키마 원본이 없습니다</strong>. 따라서 아래 스키마는 프런트 코드가 읽고 쓰는 <strong>Firebase Realtime Database 노드 기준 상세 스키마</strong>입니다.</p>
+<p><img alt="전체 데이터 ERD" src="images/data-erd-overall.svg" /></p>
+<p><img alt="기능별 데이터 관계도: 리뷰 / 주문" src="images/review-order-erd.svg" /></p>
+<h3 id="_39">상세 스키마</h3>
+<table>
+<thead>
+<tr>
+<th>노드</th>
+<th>필드</th>
+<th>타입(추정)</th>
+<th>필수 여부</th>
+<th>기본값/제약</th>
+<th>사용 화면</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/itmes/{itemId}</code></td>
+<td><code>title</code></td>
+<td>string</td>
+<td>메인 렌더링상 사실상 필수</td>
+<td>없음</td>
+<td><code>/main</code></td>
+</tr>
+<tr>
+<td><code>/itmes/{itemId}</code></td>
+<td><code>price</code></td>
+<td>string 또는 number</td>
+<td>사실상 필수</td>
+<td>없음</td>
+<td><code>/main</code></td>
+</tr>
+<tr>
+<td><code>/itmes/{itemId}</code></td>
+<td><code>content</code></td>
+<td>string</td>
+<td>사실상 필수</td>
+<td>없음</td>
+<td><code>/main</code></td>
+</tr>
+<tr>
+<td><code>/itmes/{itemId}</code></td>
+<td><code>imgUrl</code></td>
+<td>string(URL)</td>
+<td>사실상 필수</td>
+<td>없음</td>
+<td><code>/main</code></td>
+</tr>
+<tr>
+<td><code>/createdReviews/{reviewId}</code></td>
+<td><code>nickname</code></td>
+<td>string</td>
+<td>작성 시 필수로 기대</td>
+<td>폼 초기값은 빈 문자열</td>
+<td><code>/review</code></td>
+</tr>
+<tr>
+<td><code>/createdReviews/{reviewId}</code></td>
+<td><code>rating</code></td>
+<td>number 또는 string</td>
+<td>작성 시 필수로 기대</td>
+<td>초기값 <code>0</code></td>
+<td><code>/review</code></td>
+</tr>
+<tr>
+<td><code>/createdReviews/{reviewId}</code></td>
+<td><code>content</code></td>
+<td>string</td>
+<td>작성 시 필수로 기대</td>
+<td>초기값 빈 문자열</td>
+<td><code>/review</code></td>
+</tr>
+<tr>
+<td><code>/createdReviews/{reviewId}</code></td>
+<td><code>imgUrl</code></td>
+<td>File/문자열 경로 미확정</td>
+<td>선택</td>
+<td>초기값 <code>null</code></td>
+<td><code>/review</code></td>
+</tr>
+<tr>
+<td><code>/cart/{orderId}</code></td>
+<td><code>user.name</code></td>
+<td>string</td>
+<td>주문 제출 시 필수 검증</td>
+<td>공백 불가</td>
+<td>장바구니 흐름</td>
+</tr>
+<tr>
+<td><code>/cart/{orderId}</code></td>
+<td><code>user.street</code></td>
+<td>string</td>
+<td>주문 제출 시 필수 검증</td>
+<td>공백 불가</td>
+<td>장바구니 흐름</td>
+</tr>
+<tr>
+<td><code>/cart/{orderId}</code></td>
+<td><code>user.city</code></td>
+<td>string</td>
+<td>주문 제출 시 필수 검증</td>
+<td>공백 불가</td>
+<td>장바구니 흐름</td>
+</tr>
+<tr>
+<td><code>/cart/{orderId}</code></td>
+<td><code>user.postalCode</code></td>
+<td>string</td>
+<td>주문 제출 시 필수 검증</td>
+<td>길이 5</td>
+<td>장바구니 흐름</td>
+</tr>
+<tr>
+<td><code>/cart/{orderId}</code></td>
+<td><code>orderedItems[]</code></td>
+<td>array<object></td>
+<td>주문 시 필수</td>
+<td>아이템 구조는 context 기준</td>
+<td>장바구니 흐름</td>
+</tr>
+<tr>
+<td><code>/detail/1</code></td>
+<td>미상(<code>skinType</code>, <code>toneType</code> 관련)</td>
+<td>object</td>
+<td>미상</td>
+<td>helper만 존재</td>
+<td>현재 활성 화면 미연결</td>
+</tr>
+<tr>
+<td><code>/review</code></td>
+<td>미상</td>
+<td>object/array</td>
+<td>미상</td>
+<td>helper만 존재</td>
+<td>현재 활성 화면 미연결</td>
+</tr>
+</tbody>
+</table>
+<h3 id="_40">관계 해석 기준</h3>
+<ul>
+<li><strong>실선 관계</strong>: 프런트 코드에서 직접 요청/응답 또는 저장이 확인된 연결  </li>
+<li><strong>논리 연결</strong>: 화면 흐름상 함께 쓰이지만 외래키나 스키마 정의는 저장소에서 확인되지 않은 연결  </li>
+<li><strong>미포함 관계</strong>: README나 이미지 자산에만 존재하고 코드/스키마 원본이 없는 MySQL 관계</li>
+</ul>
+<p><a id="maintenance"></a></p>
+<h2 id="_41">유지보수 및 운영 절차</h2>
+<h3 id="1_1">1) 환경 설정</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>실제 위치</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>프런트엔드 루트</td>
+<td><code>/home/runner/work/MIMO/MIMO/mimo-frontend</code></td>
+<td>Create React App 기반 프로젝트입니다.</td>
+</tr>
+<tr>
+<td>패키지 정의</td>
+<td><code>mimo-frontend/package.json</code></td>
+<td><code>react</code>, <code>react-router-dom</code>, <code>firebase</code>, <code>axios</code>, <code>react-webcam</code> 등을 사용합니다.</td>
+</tr>
+<tr>
+<td>환경 변수 예시</td>
+<td><code>mimo-frontend/.env</code></td>
+<td>Firebase 관련 값이 들어 있지만 현재 형식은 일반 CRA <code>.env</code> 형식과 다르게 괄호가 포함되어 있습니다.</td>
+</tr>
+<tr>
+<td>Firebase 초기화</td>
+<td><code>mimo-frontend/src/fbase.js</code></td>
+<td>코드 안에 Firebase 설정이 하드코딩되어 있습니다.</td>
+</tr>
+<tr>
+<td>로그인 상태 저장</td>
+<td>브라우저 <code>localStorage['token']</code></td>
+<td>보호 라우트 조건에 사용됩니다.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2">2) 로컬 실행</h3>
+<table>
+<thead>
+<tr>
+<th>실행 위치</th>
+<th>명령</th>
+<th>필요한 설정</th>
+<th>성공 확인 방법</th>
+<th>이번 분석에서 확인한 결과</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mimo-frontend</code></td>
+<td><code>npm install</code></td>
+<td>Node/npm</td>
+<td><code>node_modules</code> 생성</td>
+<td>실행 완료</td>
+</tr>
+<tr>
+<td><code>mimo-frontend</code></td>
+<td><code>npm start</code></td>
+<td>3000 포트 사용 가능</td>
+<td><code>http://localhost:3000</code> 개발 서버 열림</td>
+<td>실행 완료, 컴파일은 성공했지만 eslint/a11y 경고 다수 확인</td>
+</tr>
+<tr>
+<td><code>mimo-frontend</code></td>
+<td><code>npm run build</code></td>
+<td>동일</td>
+<td><code>build/</code> 폴더 생성</td>
+<td>절차만 정리, 이번 문서 작성 중에는 미실행</td>
+</tr>
+<tr>
+<td><code>mimo-frontend</code></td>
+<td><code>npm test</code></td>
+<td>인터랙티브 watch 환경</td>
+<td>테스트 러너 시작</td>
+<td>절차만 정리, 저장소에 의미 있는 앱 테스트는 거의 없음</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3">3) 변경 위치 찾기</h3>
+<table>
+<thead>
+<tr>
+<th>변경하려는 기능</th>
+<th>먼저 볼 파일</th>
+<th>함께 따라갈 파일</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>로그인/회원가입</td>
+<td><code>components/Auth/AuthForm.jsx</code></td>
+<td><code>store/auth-context.jsx</code>, <code>fbase.js</code>, <code>App.jsx</code></td>
+</tr>
+<tr>
+<td>메인 상품 목록</td>
+<td><code>components/Main/MainList.jsx</code></td>
+<td><code>pages/Mainpages.jsx</code>, Firebase <code>/itmes.json</code> 데이터</td>
+</tr>
+<tr>
+<td>카메라/메이크업</td>
+<td><code>components/Modeling/camera.js</code></td>
+<td><code>components/Modeling/upload.js</code>, <code>components/Modeling/constants.jsx</code>, 로컬 AI 서버</td>
+</tr>
+<tr>
+<td>프로필/비밀번호 변경</td>
+<td><code>components/Profile/UserProfile.jsx</code></td>
+<td><code>components/Profile/ProfileContent.jsx</code>, <code>components/Profile/ProfileForm.jsx</code></td>
+</tr>
+<tr>
+<td>리뷰</td>
+<td><code>components/Review/ReviewForm.jsx</code></td>
+<td><code>components/Review/FileInput.jsx</code>, <code>components/Review/ReviewList.jsx</code>, <code>data/api.jsx</code></td>
+</tr>
+<tr>
+<td>하단 이동 경로</td>
+<td><code>components/Layout/nav/FooterNav.jsx</code></td>
+<td><code>App.jsx</code> 라우트 정의</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4">4) 변경 영향 포인트</h3>
+<ul>
+<li>인증 토큰 저장 방식을 바꾸면 <code>App.jsx</code>의 보호 라우트 전체가 영향받습니다.  </li>
+<li>Firebase DB 경로명을 바꾸면 <code>MainList</code>, <code>ReviewForm</code>, <code>Cart</code>가 모두 수정 대상입니다.  </li>
+<li><code>/cart</code> 라우트를 복구하려면 <code>App.jsx</code>, <code>MainNavigation.jsx</code>, <code>FooterNav.jsx</code>, Cart 관련 provider 연결 여부를 함께 봐야 합니다.  </li>
+<li>시뮬레이션 서버 계약을 바꾸면 <code>camera.js</code>와 <code>upload.js</code>의 요청 필드와 OpenCV 후처리를 같이 조정해야 합니다.</li>
+</ul>
+<h3 id="5">5) 테스트·빌드</h3>
+<ul>
+<li><strong>즉시 확인이 필요한 변경</strong>: 화면 라우팅, 인증, Firebase 요청, 카메라 브라우저 권한.  </li>
+<li><strong>기존 도구</strong>: CRA 기본 <code>npm start</code>, <code>npm run build</code>, <code>npm test</code>.  </li>
+<li><strong>수동 확인 우선 기능</strong>: 로그인 성공 후 보호 라우트 노출, 상품 목록 로딩, 리뷰 저장 요청, 카메라 권한 승인 후 촬영/업로드.  </li>
+<li><strong>실행 결과와 절차 구분</strong>: 이번 분석에서는 <code>npm start</code>로 앱을 실제 실행해 홈/인증/메인 화면을 캡처했고, 나머지 로그인 필요 화면은 저장소에 포함된 기존 스크린샷을 사용했습니다.</li>
+</ul>
+<h3 id="6">6) 배포·복구</h3>
+<p>현재 저장소에는 Dockerfile, CI/CD workflow, 배포 스크립트, 인프라 설정 파일이 없습니다. 따라서 현재 확인 가능한 범위에서 말할 수 있는 복구 절차는 <strong>프런트 개발 서버 재실행 및 외부 의존성 점검</strong>까지입니다.</p>
+<ul>
+<li>프런트 화면이 뜨지 않으면 <code>mimo-frontend</code>에서 <code>npm install</code> 후 <code>npm start</code>를 다시 실행합니다.  </li>
+<li>로그인/DB 연동이 실패하면 Firebase 설정값과 네트워크 접근 가능 여부를 먼저 확인합니다.  </li>
+<li>카메라 시뮬레이션이 실패하면 <code>localhost:8000</code> 서버 기동 여부를 확인합니다. 이 저장소만으로는 해당 서버를 복구할 수 없습니다.</li>
+</ul>
+<h3 id="7">7) 증상별 문제 진단 가이드</h3>
+<table>
+<thead>
+<tr>
+<th>증상</th>
+<th>먼저 볼 지점</th>
+<th>확인 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>로그인 후 보호 화면이 안 열림</td>
+<td><code>store/auth-context.jsx</code>, <code>App.jsx</code></td>
+<td><code>localStorage['token']</code> 저장 여부, <code>isLoggedIn</code> 계산 여부</td>
+</tr>
+<tr>
+<td>로그인 팝업은 떴지만 이동이 없음</td>
+<td><code>AuthForm.jsx</code></td>
+<td>Google 로그인 성공 후 <code>navigate()</code>를 호출하지 않는 현재 흐름 확인</td>
+</tr>
+<tr>
+<td>장바구니 아이콘을 눌러도 화면이 안 바뀜</td>
+<td><code>App.jsx</code></td>
+<td><code>/cart</code> 라우트 부재로 와일드카드가 <code>/main</code>으로 돌리는지 확인</td>
+</tr>
+<tr>
+<td>메인 상품이 비어 있음</td>
+<td><code>MainList.jsx</code></td>
+<td><code>/itmes.json</code> 응답 구조와 <code>response.ok</code> 확인</td>
+</tr>
+<tr>
+<td>리뷰를 저장했는데 목록이 안 바뀜</td>
+<td><code>Review.jsx</code>, <code>ReviewForm.jsx</code></td>
+<td>목록이 <code>mockReview.json</code> 기반이라 서버 응답과 연결되지 않은 구조 확인</td>
+</tr>
+<tr>
+<td>카메라 촬영 후 적용이 안 됨</td>
+<td><code>camera.js</code>, <code>upload.js</code></td>
+<td><code>localhost:8000</code> 서버 상태, <code>path</code> 전달, <code>prediction/imageArray</code> 존재, <code>this.setState</code> 사용 여부</td>
+</tr>
+<tr>
+<td>프로필 사진/이름이 비어 있음</td>
+<td><code>UserProfile.jsx</code>, Firebase Auth</td>
+<td><code>currentUser</code> 정보가 실제로 채워지는 로그인 방식인지 확인</td>
+</tr>
+</tbody>
+</table>
+<h2 id="_42">검수 결과</h2>
+<ul>
+<li>Markdown 본문에서 사용하는 모든 이미지 경로를 <code>docs/handover/images/</code> 상대 경로로 맞췄습니다.  </li>
+<li>내부 링크는 명시적 anchor id(<code>#architecture</code>, <code>#screen-auth</code> 등)로 연결했습니다.  </li>
+<li>PDF는 같은 Markdown을 HTML로 렌더링한 뒤 생성하는 방식으로 만들 예정이며, 페이지 잘림과 이미지 누락 여부를 함께 확인합니다.</li>
+</ul></body></html>
