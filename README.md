@@ -67,3 +67,8 @@ Dice-Loss 적용 시도 했으나, tensor shape issue로 추후 다시 적용 �
 * 눈 두덩이, 볼 등 얼굴의 다른영역도 semantic seg -mentation 하여 메이크업 시뮬레이션 기능 확장 
  
 
+
+
+## SDUI 화면 편집기 연동 가이드
+
+[프런트엔드·백엔드·DB별 가이드와 템플릿 샘플](docs/sdui-guides/2026-09-19/README.md) — 2026-09-19 작성. 설계안과 검증 범위를 포함합니다.
